@@ -124,6 +124,11 @@ npm run test:ui
 - [Create event hook](https://aps.autodesk.com/en/docs/webhooks/v1/reference/http/systems-system-events-event-hooks-POST/)
 - [Issues webhook events](https://aps.autodesk.com/en/docs/webhooks/v1/reference/events/issues_events/)
 
+## Disclaimer
+
+This sample application was developed with AI-assisted tooling (Github Copilot) to demonstrate **Autodesk Platform Services (APS) Construction Issues webhooks**—3-legged OAuth, Data Management hub/project browsing, multi-region webhook management, and local callback handling. It is provided **as-is** for learning and demonstration only.
+
+Reasonable care was taken to align behavior with the public APS Webhooks and Issues event documentation, but the code has **not** been validated for production use. Before relying on it in any live environment, perform your own **security review**, **error-handling and resilience checks**, and **end-to-end testing** with your APS app, ACC provisioning, and callback infrastructure. **Use at your own risk.**
 
 ## License
 
