@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Issues Webhooks | Autodesk APS</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="/styles.css">
+  <script defer src="/vendor/lucide/lucide.min.js"></script>
+  <script defer src="/app.js"></script>
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><img class="brand-logo" src="/aps-logo.svg" width="27" height="27" alt="Autodesk Platform Services"><i data-lucide="webhook" aria-hidden="true"></i><span>Autodesk <strong>APS</strong></span><span class="app-name">Construction Issues</span></div>
+    <div class="account"><span id="user-name">Not connected</span><button id="auth-button" class="button"><i data-lucide="log-in" aria-hidden="true"></i><span id="auth-label">Sign in with Autodesk</span></button></div>
+  </header>
+  <main>
+    <div class="page-heading"><div><p class="eyebrow">Developer workspace</p><h1>Issues Webhooks</h1></div><span id="connection" class="status">Signed out</span></div>
+    <p id="notice" class="notice" role="status" hidden></p>
+    <section class="project-bar" aria-label="Project selection">
+      <label>Hub<select id="hub" disabled><option value="">Sign in to load hubs</option></select></label>
+      <label>Project<select id="project" disabled><option value="">No project selected</option></select></label>
+      <button id="reload-hubs" class="icon-button" title="Reload hubs and projects" aria-label="Reload hubs and projects" disabled><i data-lucide="refresh-cw" aria-hidden="true"></i></button>
+    </section>
+    <section class="hooks-section" aria-labelledby="hooks-title">
+      <div class="section-heading"><div><h2 id="hooks-title">Registered Issues Webhooks <span id="hook-count" class="count">0</span></h2><p id="region-warning" class="region-warning" role="status" hidden></p><p id="hook-summary">No project selected</p></div><button id="refresh-hooks" class="icon-button" title="Refresh webhooks" aria-label="Refresh webhooks" disabled><i data-lucide="refresh-cw" aria-hidden="true"></i></button></div>
+      <div class="table-scroll"><table><thead><tr><th scope="col">Region</th><th scope="col">Scope (project ID)</th><th scope="col">Event</th><th scope="col">Callback URL</th><th scope="col">Status</th><th scope="col">Action</th></tr></thead><tbody id="hooks-body"></tbody></table></div>
+      <div id="hooks-empty" class="empty-state"><i data-lucide="webhook" aria-hidden="true"></i><p id="empty-label">No project selected</p></div>
+      <div class="table-footer"><span>autodesk.construction.issues</span><span>8 regions</span></div>
+    </section>
+    <div class="workspace">
+      <section class="create-section" aria-labelledby="create-title">
+        <div class="section-heading"><h2 id="create-title">New webhook</h2><i data-lucide="plus" aria-hidden="true"></i></div>
+        <form id="create-form">
+          <div class="project-pickers">
+            <label>Hub<select id="form-hub" disabled><option value="">Sign in to load hubs</option></select></label>
+            <button id="reload-hubs" class="icon-button" title="Reload hubs and projects" aria-label="Reload hubs and projects" disabled><i data-lucide="refresh-cw" aria-hidden="true"></i></button>
+            <label>Project<select id="form-project" disabled><option value="">No project selected</option></select></label>
+          </div>
+          <fieldset id="create-fields" disabled>
+            <label>Project ID<input id="project-id" class="mono" readonly placeholder="No project selected"></label>
+            <div class="form-row"><label>Region<select id="region"></select></label><label>Issues event<select id="event"></select></label></div>
+            <fieldset class="callback-options"><legend>Callback destination</legend><div class="segmented"><label><input type="radio" name="callbackType" value="local" checked><span><i data-lucide="radio" aria-hidden="true"></i>Local / ngrok</span></label><label><input type="radio" name="callbackType" value="explicit"><span><i data-lucide="link" aria-hidden="true"></i>Explicit URL</span></label></div></fieldset>
+            <label><span id="callback-label">Local callback URL</span><input id="callback-url" type="url" readonly placeholder="NGROK_URL not configured"></label>
+            <label>Custom data <span class="optional">Optional · JSON object</span><textarea id="custom-data" class="mono" rows="3" spellcheck="false" placeholder='{"source": "issues-workspace"}'></textarea></label>
+            <button id="create-button" class="button primary" type="submit"><i data-lucide="plus" aria-hidden="true"></i><span id="create-label">Create webhook</span></button>
+          </fieldset>
+        </form>
+        <p id="create-status" class="form-status" role="status"></p>
+      </section>
+      <section class="callbacks-section" aria-labelledby="callbacks-title">
+      <div class="section-heading"><div><h2 id="callbacks-title"><i data-lucide="radio" aria-hidden="true"></i>Local callback inbox <span id="delivery-count" class="count">0</span></h2><p id="callback-status" role="status">Not connected</p></div><button id="copy-json" class="icon-button" aria-label="Copy callback JSON" title="Copy callback JSON" disabled><i data-lucide="copy" aria-hidden="true"></i></button></div>
+      <div class="callback-toolbar"><label>Delivery<select id="delivery" disabled><option>No callbacks received</option></select></label><label class="checkbox"><input id="follow-latest" type="checkbox" checked>Latest</label></div>
+      <pre id="callback-json" tabindex="0" aria-label="Callback JSON">{}</pre>
+      </section>
+    </div>
+    <footer><span>Autodesk Platform Services</span><a href="https://aps.autodesk.com/en/docs/webhooks/v1/reference/events/issues_events/" target="_blank" rel="noreferrer">Issues event reference <i data-lucide="arrow-up-right" aria-hidden="true"></i></a></footer>
+  </main>
+  <dialog id="error-dialog" aria-labelledby="error-title"><div class="dialog-heading"><h2 id="error-title">Request failed</h2><button id="close-error" class="icon-button" aria-label="Close error" title="Close"><i data-lucide="x" aria-hidden="true"></i></button></div><p id="error-message"></p><form method="dialog"><button class="button primary">Dismiss</button></form></dialog>
+  <dialog id="delete-dialog" aria-labelledby="delete-title"><div class="dialog-heading"><h2 id="delete-title">Delete webhook?</h2><button id="close-delete" class="icon-button" aria-label="Cancel deletion" title="Cancel"><i data-lucide="x" aria-hidden="true"></i></button></div><p id="delete-message">This permanently removes the webhook from Autodesk APS. This cannot be undone.</p><form method="dialog"><button id="cancel-delete" class="button">Cancel</button><button id="confirm-delete" class="button danger" type="button"><i data-lucide="trash-2" aria-hidden="true"></i><span>Delete webhook</span></button></form></dialog>
+</body>
+</html>

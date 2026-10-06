@@ -1,0 +1,32 @@
+{
+  "name": "aps-issues-webhooks-sample",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20.11"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js",
+    "test": "node --test test/*.test.js",
+    "test:ui": "playwright test",
+    "check": "node --check server.js && node --check lib/app.js && node --check lib/aps.js && node --check lib/webhooks.js && node --check public/app.js"
+  },
+  "dependencies": {
+    "@aps_sdk/authentication": "^1.0.1",
+    "@aps_sdk/data-management": "^1.1.4",
+    "@fontsource/ibm-plex-mono": "^5.3.0",
+    "@fontsource/ibm-plex-sans": "^5.3.0",
+    "dotenv": "^16.6.1",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.7.0",
+    "express-session": "^1.19.0",
+    "helmet": "^8.3.0",
+    "lucide": "^1.48.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "supertest": "^7.3.0"
+  }
+}
